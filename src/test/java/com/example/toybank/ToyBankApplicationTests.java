@@ -46,9 +46,9 @@ class ToyBankApplicationTests {
         AccountTransaction created = controller.createTransaction(sourceTransaction) ;
 
         int transactionId = created.getId();
-        AccountTransaction retrieved = controller.findTransaction(transactionId) ;
+        AccountTransaction retrieved = controller.findTransaction(transactionId).getBody() ;
 
-        assertEqualTransactionValues(sourceTransaction, created);
+        assertEqualTransactionValues(sourceTransaction, retrieved);
     }
 
     private AccountTransaction createSourceTransaction() {

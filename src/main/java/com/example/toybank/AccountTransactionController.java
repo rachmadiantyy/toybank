@@ -3,14 +3,15 @@ package com.example.toybank;
 
 import com.example.toybank.repository.AccountTransaction;
 import com.example.toybank.repository.TransactionRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
+import java.util.Optional;
 
-@Controller("transaction")
+@RestController
+@RequestMapping("transaction")
 public class AccountTransactionController {
 
     private final TransactionRepository repository;
@@ -21,12 +22,14 @@ public class AccountTransactionController {
 
 
     @GetMapping("/{id}")
-    public AccountTransaction findTransaction(@PathParam( "id") int id) {
-        return null ;
+    public ResponseEntity<AccountTransaction> findTransaction(@PathVariable( "id") Integer id) {
+        Optional<AccountTransaction> byId = repository.findById(id);
+        return byId.isPresent() ? ResponseEntity.ok(byId.get()) : ResponseEntity.notFound().build();
     }
-    @PostMapping
+
+    @PostMapping("/")
     public AccountTransaction createTransaction(@RequestBody AccountTransaction accountTransaction) {
-        return repository.save(accountTransaction) ;
+        return repository.save(accountTransaction);
     }
 
 
