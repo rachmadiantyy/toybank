@@ -3,7 +3,9 @@
      stages {
          stage ('build') {
             withMaven {
-                sh "mvn package"
+                    steps {
+                        sh "mvn package"
+                    }
                 }
              }
      }
