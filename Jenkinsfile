@@ -2,8 +2,8 @@
      agent any
      stages {
          stage ('build') {
-            withMaven {
-                    steps {
+            steps {
+                    withMaven {
                         sh "mvn package"
                     }
                 }
