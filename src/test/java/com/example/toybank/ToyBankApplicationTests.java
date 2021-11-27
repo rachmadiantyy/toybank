@@ -14,11 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class ToyBankApplicationTests {
 
     private static final String DESCRIPTION = "A purchase";
-
     private static final BigDecimal AMOUNT = new BigDecimal ("23.43");
-
     private static final LocalDate  DATE = LocalDate.now();
-
     private static final int ACCOUNT_ID = 1 ;
 
     @Autowired

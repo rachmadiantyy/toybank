@@ -2,25 +2,16 @@ package com.example.toybank;
 
 import com.example.toybank.repository.AccountTransaction;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.util.AssertionErrors.assertTrue;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("e2etest")
+
 public class ToyBankApplicationE2E {
 
     private static final String DESCRIPTION = "A marvellous thing";
@@ -31,14 +22,13 @@ public class ToyBankApplicationE2E {
 
     private static final int ACCOUNT_ID = 5 ;
 
-    @LocalServerPort
-    private int port;
+    private int port = 51131;
 
-    @Value("${toybank.hostname}")
-    private String hostname ;
 
-    @Autowired
-    private TestRestTemplate restTemplate;
+    private String hostname = "127.0.0.1";
+
+
+    private RestTemplate restTemplate = new RestTemplate();
 
     @Test
     public void saveAndRetrieve() {
