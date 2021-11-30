@@ -4,6 +4,7 @@ import com.example.toybank.repository.AccountTransaction;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class ToyBankApplicationTests {
 
     private static final String DESCRIPTION = "A purchase";

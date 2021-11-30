@@ -1,7 +1,11 @@
 package com.example.toybank;
 
 import com.example.toybank.repository.AccountTransaction;
+import com.example.toybank.repository.TransactionRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -11,7 +15,7 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
+@SpringBootTest
 public class ToyBankApplicationE2E {
 
     private static final String DESCRIPTION = "A marvellous thing";
@@ -22,13 +26,21 @@ public class ToyBankApplicationE2E {
 
     private static final int ACCOUNT_ID = 5 ;
 
-    private int port = 51131;
+    private int port = 52830;
 
 
     private String hostname = "127.0.0.1";
 
 
     private RestTemplate restTemplate = new RestTemplate();
+
+    @Autowired
+    private TransactionRepository transactionRepository;
+
+    @BeforeEach
+    public void initDatabase() {
+        transactionRepository.deleteAll();
+    }
 
     @Test
     public void saveAndRetrieve() {
