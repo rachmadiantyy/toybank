@@ -11,7 +11,8 @@
                      }
                      withCredentials([sshUserPrivateKey(credentialsId: 'git_automation', keyFileVariable: 'SSH_FILE')]) {
                         sh '''
-                        export GIT_SSH_COMMAND="ssh -i $SSH_FILE -o StrictHostKeyChecking=no" git checkout image-build-branch
+                        export GIT_SSH_COMMAND="ssh -i $SSH_FILE -o StrictHostKeyChecking=no"
+                        git checkout image-build-branch
                         git merge main
                         git push
                         '''
