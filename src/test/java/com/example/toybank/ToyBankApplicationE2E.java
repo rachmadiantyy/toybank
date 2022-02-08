@@ -26,10 +26,10 @@ public class ToyBankApplicationE2E {
 
     private static final int ACCOUNT_ID = 5 ;
 
-    private int port = 52830;
+    private int port = 8080;
 
 
-    private String hostname = "127.0.0.1";
+    private String hostname = "toybank.test.svc.cluster.local";
 
 
     private RestTemplate restTemplate = new RestTemplate();
