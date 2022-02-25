@@ -1,3 +1,5 @@
+#@ load("@ytt:data", "data")
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -5,7 +7,7 @@ metadata:
   labels:
     app: toybank
   name: toybank
-  namespace: test
+  namespace: #@ data.values.metadata.namespace
 spec:
   replicas: 1
   selector:
@@ -19,7 +21,7 @@ spec:
         app: toybank
     spec:
       containers:
-      - image: pkharbor.uksouth.cloudapp.azure.com/toybank/toy-bank:1.0.1
+      - image: #@ data.values.image
         ports:
         - containerPort: 8080
         name: toy-bank

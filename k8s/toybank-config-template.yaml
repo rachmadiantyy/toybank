@@ -1,0 +1,10 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: v1
+data:
+  databaseUrl: #@ data.values.metadata.databaseUrl
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: toybank-config
+  namespace: #@ data.values.metadata.namespace

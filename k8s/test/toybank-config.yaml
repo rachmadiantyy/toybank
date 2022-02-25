@@ -1,9 +1,0 @@
-apiVersion: v1
-data:
-  databaseUrl: jdbc:postgresql://host.minikube.internal:5432/dev
-kind: ConfigMap
-metadata:
-  creationTimestamp: null
-  name: toybank-config
-  namespace: test
-

@@ -5,3 +5,5 @@ kind: ConfigMap
 metadata:
   creationTimestamp: null
   name: toybank-config
+  namespace: test
+

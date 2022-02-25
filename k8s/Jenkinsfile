@@ -1,0 +1,29 @@
+pipeline {
+  agent any
+   stages {
+    stage('foo') {
+      steps {
+        withCredentials([sshUserPrivateKey(credentialsId: 'git_automation', keyFileVariable: 'SSH_FILE')]) {
+            sh '''
+                        export GIT_SSH_COMMAND="ssh -i $SSH_FILE -o StrictHostKeyChecking=no"
+                        git clone git@github.com:pkpivot/toybank.git
+              '''
+        }
+        withMaven (
+            maven: 'maven-3-8',
+            mavenLocalRepo: '.repository'
+            ) {
+            sh '''
+                cd toybank
+                mvn package -Dtest=ToyBankApplicationE2E
+            '''
+        }
+        withCredentials([kubeconfigFile(credentialsId: 'minikube-config', variable: 'KUBECONFIG')]) {
+            sh ''' 
+                kubectl apply -f toybank/k8s/test/.
+            '''    
+          }
+      }
+    }
+  }
+}
