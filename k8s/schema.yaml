@@ -1,6 +1,6 @@
 #@data/values-schema
 ---
-image: ""
+image: "toybank:latest"
 data:
   databaseUrl: "jdbc:postgresql://host.minikube.internal:5432/dev"
 metadata:
