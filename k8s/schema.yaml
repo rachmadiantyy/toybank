@@ -3,5 +3,5 @@
 image: "toybank:latest"
 data:
   databaseUrl: "jdbc:postgresql://host.minikube.internal:5432/dev"
-metadata:
+metadata:cd .
   namespace: "test"

@@ -1,0 +1,38 @@
+pipeline {
+  agent any
+   stages {
+    stage('foo') {
+      steps {
+        withCredentials([sshUserPrivateKey(credentialsId: 'git_automation', keyFileVariable: 'SSH_FILE')]) {
+            sh '''
+                        export GIT_SSH_COMMAND="ssh -i $SSH_FILE -o StrictHostKeyChecking=no"
+                        git clone git@github.com:pkpivot/toybank.git
+              '''
+        }
+        withCredentials([kubeconfigFile(credentialsId: 'minikube-config', variable: 'KUBECONFIG')]) {
+            sh ''' 
+            
+                cd toybank/k8s
+                ytt -f toybank-config-template.yaml -f toybank-deploy-template.yaml  -f toybank-service-template.yaml -f schema.yaml  -v image=pkharbor.uksouth.cloudapp.azure.com/toybank/toy-bank:1.0.1 -v metadata.namespace=test -v data.databaseUrl=jdbc:postgresql://host.minikube.internal:5432/dev --output-files test 
+                kubectl apply -f test/.
+            '''    
+        }
+        withCredentials([usernamePassword(credentialsId: 'test-db-credentials', usernameVariable: 'DATABASE_USER', passwordVariable: 'DATABASE_PASSWORD')]) {
+            // This is the URL for a database running on the host of a minikube cluster. 
+            // You need to change it for your installation
+            withEnv(['DATABASE_URL=jdbc:postgresql://host.minikube.internal:5432/dev']) {
+                withMaven(
+                    maven: 'maven-3-8',
+                    mavenLocalRepo: '.repository'
+                    ) {
+                   sh '''
+                   cd toybank
+                   mvn package -Dtest=ToyBankApplicationE2E
+                   '''
+               }
+            }
+        }
+      }
+    }
+  }
+}
