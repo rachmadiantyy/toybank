@@ -1,2 +1,2 @@
 # toybank
-Simple demo app for working with deployment pipelines
+Simple demo app for working with deployment pipelines. 
