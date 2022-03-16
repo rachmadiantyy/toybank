@@ -9,7 +9,7 @@ metadata:
   namespace: #@ data.values.metadata.namespace
 spec:
   ports:
-    - nodePort: 31000
+    - nodePort: #@ data.values.spec.ports.targetPort
       port: 8080
       protocol: TCP
       targetPort: 8080

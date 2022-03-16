@@ -5,3 +5,6 @@ data:
   databaseUrl: "jdbc:postgresql://host.minikube.internal:5432/dev"
 metadata:
   namespace: "test"
+spec:
+  ports:
+    targetPort: 31000
