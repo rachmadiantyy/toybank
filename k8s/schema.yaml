@@ -1,7 +1,7 @@
 #@data/values-schema
 ---
-image: "toybank:latest"
+image: "pkatpivotal/toybank:latest"
 data:
   databaseUrl: "jdbc:postgresql://host.minikube.internal:5432/dev"
-metadata:cd .
+metadata:
   namespace: "test"
