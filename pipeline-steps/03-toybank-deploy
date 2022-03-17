@@ -1,0 +1,23 @@
+pipeline {
+  agent any
+   stages {
+    stage('run-tests') {
+      steps {
+        withCredentials([sshUserPrivateKey(credentialsId: 'git_automation', keyFileVariable: 'SSH_FILE')]) {
+            sh '''
+                export GIT_SSH_COMMAND="ssh -i $SSH_FILE -o StrictHostKeyChecking=no"
+                git clone git@github.com:pkpivot/toybank.git
+            '''
+        }
+        withCredentials([kubeconfigFile(credentialsId: 'minikube-config', variable: 'KUBECONFIG')]) {
+            sh ''' 
+                cd toybank/k8s
+                ytt -f toybank-config-template.yaml -f toybank-deploy-template.yaml  -f toybank-service-template.yaml -f schema.yaml  -v image=$DH_IMAGE --data-value-yaml spec.ports.nodePort=31010 -v metadata.namespace=production -v data.databaseUrl=jdbc:postgresql://host.minikube.internal:5432/production --output-files production
+                kubectl apply -f production/.
+            '''    
+        }
+
+      }
+    }
+  }
+}

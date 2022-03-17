@@ -1,7 +1,10 @@
 pipeline {
+  parameters {
+    string(name: 'PRODUCTION_IMAGE', defaultValue: env.DH_IMAGE_NAME + ':' + env.DH_IMAGE_TAG)
+  }
   agent any
    stages {
-    stage('foo') {
+    stage('run-tests') {
       steps {
         withCredentials([sshUserPrivateKey(credentialsId: 'git_automation', keyFileVariable: 'SSH_FILE')]) {
             sh '''
@@ -11,11 +14,14 @@ pipeline {
         }
         withCredentials([kubeconfigFile(credentialsId: 'minikube-config', variable: 'KUBECONFIG')]) {
             sh ''' 
-            
+                export DH_IMAGE=$DH_IMAGE_NAME:$DH_IMAGE_TAG
+                echo IMAGE = $DH_IMAGE
                 cd toybank/k8s
-                ytt -f toybank-config-template.yaml -f toybank-deploy-template.yaml  -f toybank-service-template.yaml -f schema.yaml  -v image=pkharbor.uksouth.cloudapp.azure.com/toybank/toy-bank:1.0.1 -v metadata.namespace=test -v data.databaseUrl=jdbc:postgresql://host.minikube.internal:5432/dev --output-files test 
+                ytt -f toybank-config-template.yaml -f toybank-deploy-template.yaml  -f toybank-service-template.yaml -f schema.yaml  -v image=$DH_IMAGE -v metadata.namespace=test -v data.databaseUrl=jdbc:postgresql://host.minikube.internal:5432/dev --output-files test
                 kubectl apply -f test/.
-            '''    
+                export PRODUCTION_IMAGE=$DH_IMAGE
+            '''
+
         }
         withCredentials([usernamePassword(credentialsId: 'test-db-credentials', usernameVariable: 'DATABASE_USER', passwordVariable: 'DATABASE_PASSWORD')]) {
             // This is the URL for a database running on the host of a minikube cluster. 
@@ -25,14 +31,27 @@ pipeline {
                     maven: 'maven-3-8',
                     mavenLocalRepo: '.repository'
                     ) {
-                   sh '''
+                /*   sh '''
+
                    cd toybank
                    mvn package -Dtest=ToyBankApplicationE2E
-                   '''
+                   ''' */
                }
             }
+
         }
       }
+    }
+  }
+  post {
+    success {
+                // propagate: disabled so that Success / fail of deployment
+                // does not determine success fail of end to end tests
+                build job: '03-toybank-deploy', propagate: false, parameters: [string(name: 'DH_IMAGE', value: env.DH_IMAGE_NAME + ':' + env.DH_IMAGE_TAG)]
+            }
+    failure  {
+        // Mail out build failure
+        echo "End to end testing failed"
     }
   }
 }
