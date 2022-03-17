@@ -11,8 +11,8 @@
                      }
                      withCredentials([sshUserPrivateKey(credentialsId: 'git_automation', keyFileVariable: 'SSH_FILE')]) {
                         sh '''
-                        export GIT_COMMITTER_NAME=jenkins-ci
-                        export GIT_COMMITTER_EMAIL=jenkins-ci@example.com
+                        git config --global user.email "jenkins-ci@example.com"
+                        git config --global user.name "jenkins-ci"
                         export GIT_SSH_COMMAND="ssh -i $SSH_FILE -o StrictHostKeyChecking=no"
                         git checkout image-build-branch
                         git merge origin/main
