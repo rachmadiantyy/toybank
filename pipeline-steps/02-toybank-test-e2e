@@ -31,11 +31,10 @@ pipeline {
                     maven: 'maven-3-8',
                     mavenLocalRepo: '.repository'
                     ) {
-                /*   sh '''
-
+                   sh '''
                    cd toybank
                    mvn package -Dtest=ToyBankApplicationE2E
-                   ''' */
+                   '''
                }
             }
 
