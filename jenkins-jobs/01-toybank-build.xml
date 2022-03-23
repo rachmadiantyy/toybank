@@ -37,7 +37,7 @@
         <source class="jenkins.plugins.git.GitSCMSource" plugin="git@4.10.1">
           <id>4ecfc748-134b-4946-bedb-2f80a1544382</id>
           <remote>git@github.com:pkpivot/toybank.git</remote>
-          <credentialsId>github-pk</credentialsId>
+          <credentialsId>git_automation</credentialsId>
           <traits>
             <jenkins.plugins.git.traits.BranchDiscoveryTrait/>
             <jenkins.scm.impl.trait.WildcardSCMHeadFilterTrait plugin="scm-api@595.vd5a_df5eb_0e39">
