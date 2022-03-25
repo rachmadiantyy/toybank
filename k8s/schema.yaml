@@ -3,6 +3,8 @@
 image: "pkatpivotal/toybank:latest"
 data:
   databaseUrl: "jdbc:postgresql://host.minikube.internal:5432/dev"
+  databasePassword: "x"
+  databaseUser: "y"
 metadata:
   namespace: "test"
 spec:

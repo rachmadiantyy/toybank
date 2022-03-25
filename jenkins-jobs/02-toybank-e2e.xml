@@ -62,7 +62,7 @@
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
           <url>git@github.com:pkpivot/toybank.git</url>
-          <credentialsId>github-pk</credentialsId>
+          <credentialsId>git_automation</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
       <branches>
