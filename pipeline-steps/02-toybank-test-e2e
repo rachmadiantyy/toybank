@@ -12,16 +12,18 @@ pipeline {
                         git clone git@github.com:pkpivot/toybank.git
               '''
         }
-        withCredentials([kubeconfigFile(credentialsId: 'minikube-config', variable: 'KUBECONFIG')]) {
-            sh ''' 
-                export DH_IMAGE=$DH_IMAGE_NAME:$DH_IMAGE_TAG
-                echo IMAGE = $DH_IMAGE
-                cd toybank/k8s
-                ytt -f toybank-config-template.yaml -f toybank-deploy-template.yaml  -f toybank-service-template.yaml -f schema.yaml  -v image=$DH_IMAGE -v metadata.namespace=test -v data.databaseUrl=jdbc:postgresql://host.minikube.internal:5432/dev --output-files test
-                kubectl apply -f test/.
-                export PRODUCTION_IMAGE=$DH_IMAGE
-            '''
+        withCredentials([usernamePassword(credentialsId: 'test-db-credentials', usernameVariable: 'DATABASE_USER', passwordVariable: 'DATABASE_PASSWORD')]) {
+            withCredentials([file(credentialsId: 'kubernetes-config', variable: 'KUBECONFIG')]) {
+                sh '''
+                    export DH_IMAGE=$DH_IMAGE_NAME:$DH_IMAGE_TAG
+                    echo IMAGE = $DH_IMAGE
+                    cd toybank/k8s
+                    ytt -f toybank-config-template.yaml -f toybank-deploy-template.yaml -f toybank-service-template.yaml -f db-secret-template.yaml -f schema.yaml -v data.databasePassword=$DATABASE_USER -v data.databaseUser=$DATABASE_PASSWORD -v image=pkatpivotal/toybank:b1.20220324.144506 -v metadata.namespace=test -v data.databaseUrl=jdbc:postgresql://host.minikube.internal:5432/dev --output-files test
+                    kubectl apply -f test/.
+                    export PRODUCTION_IMAGE=$DH_IMAGE
+                '''
 
+            }
         }
         withCredentials([usernamePassword(credentialsId: 'test-db-credentials', usernameVariable: 'DATABASE_USER', passwordVariable: 'DATABASE_PASSWORD')]) {
             // This is the URL for a database running on the host of a minikube cluster. 
