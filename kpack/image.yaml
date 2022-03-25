@@ -1,0 +1,15 @@
+apiVersion: kpack.io/v1alpha2
+kind: Image
+metadata:
+  name: toybank-image
+  namespace: default
+spec:
+  tag: pkatpivotal/toybank:latest 
+  serviceAccountName: kpack-service-account
+  builder:
+    name: toybank-builder
+    kind: Builder
+  source:
+    git:
+      url: https://github.com/pkpivot/toybank.git 
+      revision: image-build-branch 

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: toybank
+  name: toybank
+  namespace: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: toybank
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: toybank
+    spec:
+      containers:
+      - image: pkatpivotal/toybank:b1.20220324.144506
+        ports:
+        - containerPort: 8080
+        name: toy-bank
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: toybank-config
+              key: databaseUrl
+        - name: DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: databaseUser
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: databasePassword
+      imagePullSecrets:
+      - name: regcred
