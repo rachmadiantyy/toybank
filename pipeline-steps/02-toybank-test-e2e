@@ -16,9 +16,10 @@ pipeline {
             withCredentials([file(credentialsId: 'kubernetes-config', variable: 'KUBECONFIG')]) {
                 sh '''
                     export DH_IMAGE=$DH_IMAGE_NAME:$DH_IMAGE_TAG
-                    echo IMAGE = $DH_IMAGE
+                    export DB_USER_B64=`echo $DATABASE_USER | base64`
+                    export DB_PASSWORD_B64=`echo $DATABASE_PASSWORD | base64`
                     cd toybank/k8s
-                    ytt -f toybank-config-template.yaml -f toybank-deploy-template.yaml -f toybank-service-template.yaml -f db-secret-template.yaml -f schema.yaml -v data.databasePassword=$DATABASE_USER -v data.databaseUser=$DATABASE_PASSWORD -v image=pkatpivotal/toybank:b1.20220324.144506 -v metadata.namespace=test -v data.databaseUrl=jdbc:postgresql://host.minikube.internal:5432/dev --output-files test
+                    ytt -f toybank-config-template.yaml -f toybank-deploy-template.yaml -f toybank-service-template.yaml -f db-secret-template.yaml -f schema.yaml -v data.databasePassword=$DB_USER_B64 -v data.databaseUser=$DB_PASSWORD_B64 -v image=pkatpivotal/toybank:b1.20220324.144506 -v metadata.namespace=test -v data.databaseUrl=jdbc:postgresql://host.minikube.internal:5432/dev --output-files test
                     kubectl apply -f test/.
                     export PRODUCTION_IMAGE=$DH_IMAGE
                 '''

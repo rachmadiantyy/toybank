@@ -10,7 +10,7 @@ pipeline {
                 git checkout image-build-branch
             '''
         }
-        withCredentials([kubeconfigFile(credentialsId: 'minikube-config', variable: 'KUBECONFIG')]) {
+        withCredentials([file(credentialsId: 'kubernetes-config', variable: 'KUBECONFIG')]) {
             sh ''' 
                 cd toybank/k8s
                 ytt -f toybank-config-template.yaml -f toybank-deploy-template.yaml  -f toybank-service-template.yaml -f schema.yaml  -v image=$DH_IMAGE --data-value-yaml spec.ports.nodePort=31010 -v metadata.namespace=production -v data.databaseUrl=jdbc:postgresql://host.minikube.internal:5432/production --output-files production
